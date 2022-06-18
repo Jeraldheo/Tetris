@@ -1,9 +1,10 @@
+//TODO: Stop pieces from falling out of the grid.
 document.addEventListener('DOMContentLoaded', ()=>{
 
     let first_div = document.querySelector("div")
     
     const num_colum = 9
-    const start_pos = 2
+    let start_pos = 2
 
     const L_rorations = [[1,2,num_colum + 1, 2*num_colum + 1], [1,2,3,num_colum+3], [2*num_colum + 1, 2*num_colum + 2, num_colum + 2, 2 ], [num_colum + 1, 
         2*num_colum + 1,2*num_colum +2, 2*num_colum + 3]] 
@@ -24,7 +25,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     let current_piece = tetrominoes[select_piece][0]
 
 
-    for(let i = 0; i<200; i++)
+    for(let i = 0; i<162; i++)
     {
         first_div.appendChild(document.createElement("div"))
     }
@@ -36,11 +37,26 @@ document.addEventListener('DOMContentLoaded', ()=>{
     {
         current_piece.forEach(index=>{squares[start_pos + index].classList.add('tetromino')})
     }
-    
+
+    function undraw()
+    {
+        current_piece.forEach(index=>{squares[start_pos + index].classList.remove('tetromino')})
+    }
+
     draw()
+    
+    setInterval(moveDown, 1000)
 
+    function moveDown()
+    {
+        undraw()
+        start_pos+=num_colum
+        draw()
+        
 
+    }
 
-
+    
+    
 
 })
