@@ -5,10 +5,12 @@ document.addEventListener('DOMContentLoaded', ()=>{
     
     const num_colum = 9
     let start_pos = 2
+    const num_colum_mini = 4
+    start_pos_mini = 0
 
     let current_rotation = 0
 
-    const L_rorations = [[1,2,num_colum + 1, 2*num_colum + 1], [1,2,3,num_colum+3], [2*num_colum + 1, 2*num_colum + 2, num_colum + 2, 2 ],  
+    const L_rorations = [[2*num_colum + 1, 2*num_colum + 2, num_colum + 2, 2 ], [1,2,num_colum + 1, 2*num_colum + 1], [1,2,3,num_colum+3],  
     [num_colum + 1, 2*num_colum + 1,2*num_colum +2, 2*num_colum + 3]] 
     
     const Z_rotations = [[num_colum + 1, num_colum+ 2, 2, 3], [1, num_colum + 1, num_colum + 2, 2*num_colum + 2],
@@ -25,6 +27,13 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
     const tetrominoes = [L_rorations, Z_rotations, T_rotations, square_rotations, I_rotations]
 
+    const tetrominoes_mini = [[2*num_colum_mini + 1, 2*num_colum_mini + 2, num_colum_mini + 2, 2 ], [num_colum_mini + 1, num_colum_mini+ 2, 2, 3], 
+    [num_colum_mini + 1, num_colum_mini + 2, num_colum_mini + 3, 2],[1,2,num_colum_mini+1,num_colum_mini +2],[2, num_colum_mini + 2, 2*num_colum_mini + 2  ]]
+    
+    const mini_grid = document.querySelectorAll('.mini-grid div')
+    
+    let select_next_piece = Math.floor(Math.random()*tetrominoes.length)
+    let next_piece = tetrominoes_mini[select_next_piece]
     let select_piece = Math.floor(Math.random()*tetrominoes.length)
     let current_piece = tetrominoes[select_piece][current_rotation]
 
@@ -56,6 +65,16 @@ document.addEventListener('DOMContentLoaded', ()=>{
         current_piece.forEach(index=>{squares[start_pos + index].classList.remove('tetromino')})
     }
 
+    function display_next()
+    {
+        next_piece.forEach(index=>{mini_grid[start_pos_mini + index].classList.add('tetromino')})
+    }
+
+    function remove_next()
+    {
+        next_piece.forEach(index=>{mini_grid[start_pos_mini + index].classList.remove('tetromino')})
+    }
+
     function key_handler(e)
     {
         if(e.keyCode==37)
@@ -77,6 +96,8 @@ document.addEventListener('DOMContentLoaded', ()=>{
     document.addEventListener('keyup', key_handler)
 
     
+    draw()
+    display_next()
     
     setInterval(moveDown, 500)
 
@@ -94,12 +115,16 @@ document.addEventListener('DOMContentLoaded', ()=>{
     {
         if(current_piece.some(index=> squares[start_pos + index + num_colum].classList.contains('bottom_outside')))
         {
+            remove_next()
             current_piece.forEach(index=>squares[start_pos + index].classList.add('bottom_outside'))
 
-            select_piece = Math.floor(Math.random()*tetrominoes.length)
+            select_piece = select_next_piece
+            select_next_piece = Math.floor(Math.random()*tetrominoes.length)
+            next_piece = tetrominoes_mini[select_next_piece]
             current_piece = tetrominoes[select_piece][current_rotation]
             start_pos = 2
             draw()
+            display_next()
         }
     }
 
