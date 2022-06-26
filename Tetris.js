@@ -2,11 +2,15 @@
 document.addEventListener('DOMContentLoaded', ()=>{
 
     let first_div = document.querySelector(".grid")
+    const start_button = document.getElementById('start-button')
+    let scoreDisplay = document.getElementById('score')
+    let score = 0
     
     const num_colum = 9
     let start_pos = 2
     const num_colum_mini = 4
     start_pos_mini = 0
+    let timerId
 
     let current_rotation = 0
 
@@ -96,10 +100,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
     document.addEventListener('keyup', key_handler)
 
     
-    draw()
-    display_next()
-    
-    setInterval(moveDown, 500)
 
     function moveDown()
     {
@@ -125,6 +125,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
             start_pos = 2
             draw()
             display_next()
+            addScore()
         }
     }
 
@@ -176,7 +177,44 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
     }
     
+    start_button.addEventListener('click', ()=>{
+        if(timerId)
+        {
+            clearInterval(timerId)
+            timerId  = null
+        }
+        else
+        {
+            draw()
+            timerId = setInterval(moveDown, 500)
+            display_next()
+
+        }
+    })    
     
-    
+    function addScore()
+    {
+        for(let i = 0; i<162; i+=num_colum)
+        {
+            const row = [i, i+1, i+2, i+3, i+4, i+5, i+6, i+7, i+8]
+
+            
+            if(row.every(index=>squares[index].classList.contains('tetromino')))
+            {
+                score+=10
+                scoreDisplay.innerHTML = score
+                row.forEach(index=>{squares[index].classList.remove('tetromino')
+                squares[index].classList.remove('bottom_outside')})
+                const squaresRemoved = squares.splice(i, num_colum)
+                squares = squaresRemoved.concat(squares)
+                squares.forEach(cell=>first_div.appendChild(cell))
+
+            }
+
+
+        }
+            
+        
+    }
 
 })
